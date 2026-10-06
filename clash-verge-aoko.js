@@ -10,8 +10,8 @@ const policies = {
   reject: "REJECT",
 };
 // Google regex must precede the general Japanese-domain rule.
-// Domain exceptions precede the Adobe process rejection.
-const order = ["ai", "japan", "proxy", "direct", "reject"];
+// Rejections take precedence over all direct and proxy routing.
+const order = ["reject", "direct", "ai", "japan", "proxy"];
 
 function main(config) {
   const available = new Set([

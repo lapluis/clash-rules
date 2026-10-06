@@ -14,11 +14,11 @@
 
 | 文件 | 默认策略 |
 | --- | --- |
+| reject.yml | REJECT |
+| direct.yml | DIRECT |
 | ai.yml | 🤖 ChatGPT & Copilot |
 | japan.yml | 日本节点（当前映射到 🍎 苹果服务） |
 | proxy.yml | 🔰 节点选择 |
-| direct.yml | DIRECT |
-| reject.yml | REJECT |
 
 ## 文档
 
