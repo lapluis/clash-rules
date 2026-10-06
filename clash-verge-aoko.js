@@ -11,7 +11,7 @@ const policies = {
 };
 // Google regex must precede the general Japanese-domain rule.
 // Domain exceptions precede the Adobe process rejection.
-const order = ["ai", "japan", "direct", "proxy", "reject"];
+const order = ["ai", "japan", "proxy", "direct", "reject"];
 
 function main(config) {
   const available = new Set([

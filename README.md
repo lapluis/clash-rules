@@ -16,8 +16,8 @@
 | --- | --- |
 | ai.yml | 🤖 ChatGPT & Copilot |
 | japan.yml | 日本节点（当前映射到 🍎 苹果服务） |
-| direct.yml | DIRECT |
 | proxy.yml | 🔰 节点选择 |
+| direct.yml | DIRECT |
 | reject.yml | REJECT |
 
 ## 文档
