@@ -5,7 +5,7 @@
 ## 使用
 
 1. 将本仓库推送到 GitHub 的 main 分支（若远程默认分支不同，调整脚本中的 baseURL）。公开仓库可以直接使用当前下载地址；私有仓库需要另外配置鉴权。
-2. 在 Clash Verge Rev 的订阅页面打开「全局扩展脚本」，粘贴 clash-verge-global.js 的全部内容并保存。
+2. 在 Clash Verge Rev 的订阅页面打开「全局扩展脚本」，粘贴 clash-verge-aoko.js 的全部内容并保存。
 3. 根据各设备订阅的代理组名称，调整脚本顶部 policies。缺少代理组时脚本会明确报错。
 4. 清空每个订阅「编辑规则」中原来的 prepend/append/delete 自定义项，避免重复。检查订阅扩展脚本或扩展配置没有再次覆盖 rules。
 5. 重新应用配置，并在运行时配置中确认出现五个 lapluis-custom-* 规则集和 RULE-SET 规则。首次应用需要能够访问 raw.githubusercontent.com。
