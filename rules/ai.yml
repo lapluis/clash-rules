@@ -1,0 +1,3 @@
+payload:
+  - 'DOMAIN-SUFFIX,backblaze.com'
+  - 'DOMAIN-REGEX,([a-z0-9-]+\.)*?google[a-z0-9-]*\.[a-z]{2,11}'

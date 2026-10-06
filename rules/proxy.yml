@@ -1,0 +1,4 @@
+payload:
+  - 'DOMAIN-SUFFIX,m-team.cc'
+  - 'DOMAIN,libs.baidu.com'
+  - 'DOMAIN-SUFFIX,an-i.workers.dev'

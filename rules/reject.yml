@@ -1,0 +1,4 @@
+payload:
+  - 'DOMAIN-SUFFIX,adobestats.io'
+  - 'DOMAIN-SUFFIX,adobe.io'
+  - 'PROCESS-PATH-REGEX,(?i).*\\Adobe\\.*\.exe'
