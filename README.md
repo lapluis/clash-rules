@@ -1,6 +1,6 @@
-# 跨设备 Clash 自定义规则
+# Clash 自定义规则
 
-规则通过 GitHub Raw 发布，由 Mihomo 每小时自动更新。此仓库只包含自定义规则，不包含订阅或节点凭据。
+规则通过 GitHub Raw 发布，由 Mihomo 每小时自动更新。
 
 ## 使用
 
@@ -22,28 +22,9 @@
 | proxy.yml | 🔰 节点选择 |
 | reject.yml | REJECT |
 
-japan.yml 表示希望通过日本节点访问的域名，不代表 Apple 服务分类。当前订阅借用「🍎 苹果服务」代理组作为日本出口，需要在 Clash Verge 中为该组选择日本节点。其他订阅应将脚本中的 policies.japan 改为实际的日本节点或日本代理组名称；脚本只检查名称存在，不验证节点所在地区。
-
 从旧版迁移时，重新粘贴全局脚本；脚本会清理旧的 lapluis-custom-apple 规则引用。
 
 规则集内部只有匹配条件，不带策略。全局脚本按上表顺序插入到订阅规则前面。当前规则按匹配范围整理，保留 Google 正则优先于 jp 后缀、域名例外优先于 Adobe 进程拦截的意图。以后增加跨集合重叠的规则时，需要检查上表优先级；不保证任意交错的原始规则顺序。
-
-## 从用户提供的 35 条规则整理
-
-- jpopsuki.eu 保留靠前的日本出口策略（当前为「🍎 苹果服务」），删除后面不会生效的「🔰 节点选择」重复项。
-- DOMAIN-SUFFIX,.jp 规范为 DOMAIN-SUFFIX,jp。
-- 删除 DOMAIN,*.tsinghua.edu.cn；DOMAIN 为精确匹配，已有 DOMAIN-SUFFIX,tsinghua.edu.cn 覆盖该域名及其子域名。
-- 共保留 33 条有效匹配条件。Adobe Windows 进程路径规则随规则集同步，其他操作系统通常不会匹配该路径。
-
-## 发布
-
-```powershell
-git add README.md clash-verge-global.js rules
-git commit -m "Add shared Mihomo rules and Clash Verge global script"
-git push -u origin main
-```
-
-以上 Git 命令在仓库目录执行。首次推送前如远程已有提交，先检查远程历史并合并；不要强制推送。
 
 ## 文档
 
