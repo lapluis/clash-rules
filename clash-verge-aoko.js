@@ -3,6 +3,13 @@
 const baseURL = "https://raw.githubusercontent.com/lapluis/clash-rules/main/rules";
 const policies = {
   ai: "🤖 ChatGPT & Copilot",
+  steam: "🎮 Steam Store & Community",
+  netflix: "🎥 NETFLIX",
+  spotify: "🎵 Spotify",
+  bahamut: "🎥 巴哈姆特",
+  microsoft: "Ⓜ️ 微软服务",
+  telegram: "📲 电报信息",
+  apple: "🍎 苹果服务",
   japan: "🇯🇵 日本节点",
   direct: "DIRECT",
   proxy: "🔰 节点选择",
@@ -29,20 +36,22 @@ function addRegionGroups(config) {
     const names = [...new Set(nodes
       .filter(node => typeof node.name === "string" && node.name.trimStart().startsWith(region.flag))
       .map(node => node.name))];
-    // Empty groups cannot be used by Mihomo.
-    return names.length ? [{ name: region.name, type: "select", proxies: names }] : [];
+    if (!names.length) return [];
+    const existing = groups.find(group => group.name === region.name);
+    // Preserve existing group settings and refresh only the region's node list.
+    return [{ type: "select", ...existing, name: region.name, proxies: names }];
   });
   const generatedNames = generated.map(group => group.name);
   // Only expose region choices in these service groups, regardless of order.
   const serviceGroups = new Set([
-    "🤖 ChatGPT & Copilot",
-    "🎮 Steam Store & Community",
-    "🎥 NETFLIX",
-    "🎵 Spotify",
-    "🎥 巴哈姆特",
-    "Ⓜ️ 微软服务",
-    "📲 电报信息",
-    "🍎 苹果服务",
+    policies.ai,
+    policies.steam,
+    policies.netflix,
+    policies.spotify,
+    policies.bahamut,
+    policies.microsoft,
+    policies.telegram,
+    policies.apple,
   ]);
   remaining.forEach(group => {
     if (serviceGroups.has(group.name)) {
