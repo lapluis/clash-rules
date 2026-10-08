@@ -33,14 +33,28 @@ function addRegionGroups(config) {
     return names.length ? [{ name: region.name, type: "select", proxies: names }] : [];
   });
   const generatedNames = generated.map(group => group.name);
-  // Keep existing selections and expose the region groups in node selection.
-  const selection = remaining.find(group => group.name === policies.proxy);
-  if (selection) {
-    selection.proxies = [...new Set([
-      ...(selection.proxies || []).filter(name => !regionNames.has(name)),
-      ...generatedNames,
-    ])];
-  }
+  // Only expose region choices in these service groups, regardless of order.
+  const serviceGroups = new Set([
+    "🤖 ChatGPT & Copilot",
+    "🎮 Steam Store & Community",
+    "🎥 NETFLIX",
+    "🎵 Spotify",
+    "🎥 巴哈姆特",
+    "Ⓜ️ 微软服务",
+    "📲 电报信息",
+    "🍎 苹果服务",
+  ]);
+  remaining.forEach(group => {
+    if (serviceGroups.has(group.name)) {
+      group.proxies = [...new Set([
+        ...(group.proxies || []).filter(name => !regionNames.has(name)),
+        ...generatedNames,
+      ])];
+    } else if (Array.isArray(group.proxies)) {
+      // Remove region choices added by earlier versions of this script.
+      group.proxies = group.proxies.filter(name => !regionNames.has(name));
+    }
+  });
   config["proxy-groups"] = [...remaining, ...generated];
 }
 
