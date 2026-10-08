@@ -1,5 +1,3 @@
-// Paste this entire file into Clash Verge Rev's global extension script.
-// Set branch to your GitHub default branch if it is not main.
 const baseURL = "https://raw.githubusercontent.com/lapluis/clash-rules/main/rules";
 const policies = {
   ai: "🤖 ChatGPT & Copilot",
@@ -15,8 +13,6 @@ const policies = {
   proxy: "🔰 节点选择",
   reject: "REJECT",
 };
-// Google regex must precede the general Japanese-domain rule.
-// Rejections take precedence over all direct and proxy routing.
 const order = ["reject", "direct", "ai", "japan", "proxy"];
 
 const regions = [
@@ -30,7 +26,6 @@ function addRegionGroups(config) {
   const groups = config["proxy-groups"] || [];
   const nodes = config.proxies || [];
   const regionNames = new Set(regions.map(region => region.name));
-  // Rebuild only the groups owned by this script on every application.
   const remaining = groups.filter(group => !regionNames.has(group.name));
   const generated = regions.flatMap(region => {
     const names = [...new Set(nodes
@@ -38,11 +33,10 @@ function addRegionGroups(config) {
       .map(node => node.name))];
     if (!names.length) return [];
     const existing = groups.find(group => group.name === region.name);
-    // Preserve existing group settings and refresh only the region's node list.
+    // Preserve group settings.
     return [{ type: "select", ...existing, name: region.name, proxies: names }];
   });
   const generatedNames = generated.map(group => group.name);
-  // Only expose region choices in these service groups, regardless of order.
   const serviceGroups = new Set([
     policies.ai,
     policies.steam,
@@ -60,7 +54,7 @@ function addRegionGroups(config) {
         ...generatedNames,
       ])];
     } else if (Array.isArray(group.proxies)) {
-      // Remove region choices added by earlier versions of this script.
+      // Clean up legacy region choices.
       group.proxies = group.proxies.filter(name => !regionNames.has(name));
     }
   });
