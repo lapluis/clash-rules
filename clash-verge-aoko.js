@@ -122,7 +122,18 @@ function main(config) {
     };
     return `RULE-SET,${name},${policies[key]}`;
   });
+  const geminiName = "MetaCubeX-google-gemini";
+  config["rule-providers"][geminiName] = {
+    type: "http",
+    behavior: "domain",
+    format: "text",
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.list",
+    path: `./rules/${geminiName}.list`,
+    interval: 3600,
+  };
+  prepend.splice(order.indexOf("ai") + 1, 0, `RULE-SET,${geminiName},${policies.ai}`);
   const existing = (config.rules || []).filter(rule =>
+    !rule.startsWith(`RULE-SET,${geminiName},`) &&
     ! [...order, "apple"].some(key => rule.startsWith(`RULE-SET,lapluis-custom-${key},`))
   );
   config.rules = [...prepend, ...existing];
