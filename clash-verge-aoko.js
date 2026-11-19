@@ -39,6 +39,7 @@ function addRegionGroups(config) {
   });
   const generatedNames = generated.map(group => group.name);
   const serviceGroups = new Set([
+    policies.proxy,
     policies.ai,
     policies.steam,
     policies.netflix,
@@ -50,9 +51,14 @@ function addRegionGroups(config) {
   ]);
   remaining.forEach(group => {
     if (serviceGroups.has(group.name)) {
+      const choices = (group.proxies || []).filter(name => !regionNames.has(name));
+      const primary = group.name !== policies.proxy && choices.includes(policies.proxy)
+        ? [policies.proxy]
+        : [];
       group.proxies = [...new Set([
+        ...primary,
         ...generatedNames,
-        ...(group.proxies || []).filter(name => !regionNames.has(name)),
+        ...choices.filter(name => !primary.includes(name)),
       ])];
     } else if (Array.isArray(group.proxies)) {
       // Clean up legacy region choices.
