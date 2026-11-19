@@ -18,6 +18,7 @@ const order = ["reject", "direct", "ai", "japan", "proxy"];
 const regions = [
   { flag: "🇭🇰", name: "🇭🇰 香港节点" },
   { flag: "🇯🇵", name: "🇯🇵 日本节点" },
+  { flag: "🇰🇷", name: "🇰🇷 韩国节点" },
   { flag: "🇺🇸", name: "🇺🇸 美国节点" },
   { flag: "🇹🇼", name: "🇹🇼 台湾节点" },
 ];
