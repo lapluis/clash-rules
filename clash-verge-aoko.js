@@ -45,9 +45,9 @@ function addRegionGroups(config) {
         type: "url-test",
         proxies: names,
         url: "https://cp.cloudflare.com/generate_204",
-        interval: 1800,
-        tolerance: 150,
-        lazy: false,
+        interval: 900,
+        tolerance: 250,
+        lazy: true,
         hidden: true,
       },
     ];
