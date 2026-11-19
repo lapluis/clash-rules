@@ -13,7 +13,7 @@ const policies = {
   proxy: "🔰 节点选择",
   reject: "REJECT",
 };
-const order = ["reject", "direct", "ai", "japan", "proxy"];
+const order = ["reject", "direct", "japan", "proxy"];
 
 const regions = [
   { flag: "🇭🇰", name: "🇭🇰 香港节点" },
@@ -131,7 +131,7 @@ function main(config) {
     ...(config["proxy-groups"] || []).map(p => p.name),
     ...(config.proxies || []).map(p => p.name),
   ]);
-  for (const key of order) {
+  for (const key of [...order, "ai"]) {
     if (!available.has(policies[key])) {
       throw new Error(`Custom rules: missing policy ${policies[key]}; edit policies for this device.`);
     }
@@ -161,7 +161,7 @@ function main(config) {
     };
     return name;
   });
-  prepend.splice(order.indexOf("ai") + 1, 0,
+  prepend.splice(order.indexOf("direct") + 1, 0,
     ...remoteAiNames.map(name => `RULE-SET,${name},${policies.ai}`));
   const existing = (config.rules || []).filter(rule =>
     !remoteAiNames.some(name => rule.startsWith(`RULE-SET,${name},`)) &&

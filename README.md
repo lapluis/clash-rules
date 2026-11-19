@@ -8,7 +8,7 @@
 2. 在 Clash Verge Rev 的「**订阅**」页面右键目标订阅，打开「**扩展脚本**」，粘贴 JS。如果已有脚本逻辑，需要先合并，避免直接覆盖。
 3. 按订阅中的代理组名称调整脚本顶部 `policies`，保存脚本。日本组由脚本自动创建，详见下方「地区分组」。
 4. 清空该订阅「编辑规则」中原来的 prepend/append/delete 自定义项。
-5. 重新应用订阅，并在运行时配置中确认出现五个 `lapluis-custom-*` 规则集、`MetaCubeX-google` 和 `MetaCubeX-openai` 两个远程规则集及对应的七条 RULE-SET 规则。首次应用需要能够访问`raw.githubusercontent.com`。
+5. 重新应用订阅，并在运行时配置中确认出现四个 `lapluis-custom-*` 规则集、`MetaCubeX-google` 和 `MetaCubeX-openai` 两个远程规则集及对应的六条 RULE-SET 规则。首次应用需要能够访问`raw.githubusercontent.com`。
 
 ## 地区分组
 
@@ -40,13 +40,12 @@
 | --- | --- |
 | reject.yml | REJECT |
 | direct.yml | DIRECT |
-| ai.yml | 🤖 AI Services |
 | 远程 google.list（`MetaCubeX-google`） | 🤖 AI Services |
 | 远程 openai.list（`MetaCubeX-openai`） | 🤖 AI Services |
 | japan.yml | 🇯🇵 日本节点 |
 | proxy.yml | 🔰 节点选择 |
 
-Google 全量域名（包括 Gemini / Antigravity、YouTube、Gmail 等）引用 [MetaCubeX 的 google.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.list)，ChatGPT / OpenAI 域名引用 [openai.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.list)，对应规则集名为 `MetaCubeX-google`、`MetaCubeX-openai`。两个规则集均使用 `behavior: domain`、`format: text`，每小时自动更新，统一指向「🤖 AI Services」，按 Google、OpenAI 的顺序紧接本地 `ai.yml`。原订阅规则继续保留在自定义规则之后；命中 Google 全量列表的流量会优先走 AI Services。`ai.yml` 继续保留原有的 `gstatic.com` 和 Google 正则两条规则。更换为本版脚本需要粘贴并重新应用一次，后续远程列表内容更新无需重新粘贴。
+Google 全量域名（包括 Gemini / Antigravity、YouTube、Gmail 等）引用 [MetaCubeX 的 google.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.list)，ChatGPT / OpenAI 域名引用 [openai.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.list)，对应规则集名为 `MetaCubeX-google`、`MetaCubeX-openai`。两个规则集均使用 `behavior: domain`、`format: text`，每小时自动更新，统一指向「🤖 AI Services」，按 Google、OpenAI 的顺序紧接 `direct.yml`。原订阅规则继续保留在自定义规则之后；命中 Google 全量列表的流量会优先走 AI Services。Google 域名统一由远程列表维护，不再使用本地 `ai.yml`。更换为本版脚本需要粘贴并重新应用一次，后续远程列表内容更新无需重新粘贴。
 
 ## 文档
 
