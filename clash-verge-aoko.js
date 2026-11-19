@@ -24,29 +24,16 @@ const regions = [
 ].map(region => ({
   ...region,
   autoName: `${region.flag} 自动选择`,
-  legacyAutoName: region.name.replace("节点", "自动选择"),
 }));
 
 function renameAiGroup(config) {
-  const legacyName = "🤖 ChatGPT & Copilot";
-  if (policies.ai === legacyName) return;
-  const groups = config["proxy-groups"] || [];
-  const legacy = groups.find(group => group.name === legacyName);
-  const target = groups.find(group => group.name === policies.ai);
-  if (legacy && target) {
-    target.proxies = [...new Set([...(target.proxies || []), ...(legacy.proxies || [])])];
-    config["proxy-groups"] = groups.filter(group => group !== legacy);
-  } else if (legacy) {
-    legacy.name = policies.ai;
-  }
+  const rename = name => name === "🤖 ChatGPT & Copilot" ? policies.ai : name;
   (config["proxy-groups"] || []).forEach(group => {
-    if (Array.isArray(group.proxies)) {
-      group.proxies = [...new Set(group.proxies.map(name => name === legacyName ? policies.ai : name))]
-        .filter(name => group.name !== policies.ai || name !== policies.ai);
-    }
-    if (group["default-selected"] === legacyName) group["default-selected"] = policies.ai;
+    group.name = rename(group.name);
+    if (Array.isArray(group.proxies)) group.proxies = group.proxies.map(rename);
+    if (group["default-selected"]) group["default-selected"] = rename(group["default-selected"]);
   });
-  const renameRule = rule => rule.split(",").map(part => part === legacyName ? policies.ai : part).join(",");
+  const renameRule = rule => rule.split(",").map(rename).join(",");
   config.rules = (config.rules || []).map(renameRule);
   Object.keys(config["sub-rules"] || {}).forEach(name => {
     config["sub-rules"][name] = config["sub-rules"][name].map(renameRule);
@@ -57,7 +44,7 @@ function addRegionGroups(config) {
   const groups = config["proxy-groups"] || [];
   const nodes = config.proxies || [];
   const regionNames = new Set(regions.map(region => region.name));
-  const managedNames = new Set(regions.flatMap(region => [region.name, region.autoName, region.legacyAutoName]));
+  const managedNames = new Set(regions.flatMap(region => [region.name, region.autoName]));
   const remaining = groups.filter(group => !managedNames.has(group.name));
   const generated = regions.flatMap(region => {
     const names = [...new Set(nodes
@@ -65,8 +52,7 @@ function addRegionGroups(config) {
       .map(node => node.name))];
     if (!names.length) return [];
     const existing = groups.find(group => group.name === region.name);
-    const existingAuto = groups.find(group => group.name === region.autoName)
-      || groups.find(group => group.name === region.legacyAutoName);
+    const existingAuto = groups.find(group => group.name === region.autoName);
     // Keep manual node choices alongside a region-only automatic selector.
     return [
       { ...existing, type: "select", name: region.name, proxies: [region.autoName, ...names] },
@@ -109,7 +95,7 @@ function addRegionGroups(config) {
         ...choices.filter(name => !primary.includes(name)),
       ])];
     } else if (Array.isArray(group.proxies)) {
-      // Clean up legacy region choices.
+      // Remove managed choices from groups without region selectors.
       group.proxies = group.proxies.filter(name => !managedNames.has(name));
     }
   });
@@ -165,7 +151,7 @@ function main(config) {
     ...remoteAiNames.map(name => `RULE-SET,${name},${policies.ai}`));
   const existing = (config.rules || []).filter(rule =>
     !remoteAiNames.some(name => rule.startsWith(`RULE-SET,${name},`)) &&
-    ! [...order, "apple"].some(key => rule.startsWith(`RULE-SET,lapluis-custom-${key},`))
+    !order.some(key => rule.startsWith(`RULE-SET,lapluis-custom-${key},`))
   );
   config.rules = [...prepend, ...existing];
   return config;
