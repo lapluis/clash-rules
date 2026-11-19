@@ -48,10 +48,13 @@ function addRegionGroups(config) {
         interval: 1800,
         tolerance: 150,
         lazy: false,
+        hidden: true,
       },
     ];
   });
-  const generatedNames = generated.filter(group => regionNames.has(group.name)).map(group => group.name);
+  const regionGroups = generated.filter(group => regionNames.has(group.name));
+  const autoGroups = generated.filter(group => !regionNames.has(group.name));
+  const generatedNames = regionGroups.map(group => group.name);
   const serviceGroups = new Set([
     policies.proxy,
     policies.ai,
@@ -83,8 +86,9 @@ function addRegionGroups(config) {
   const insertIndex = adBlockIndex === -1 ? remaining.length : adBlockIndex;
   config["proxy-groups"] = [
     ...remaining.slice(0, insertIndex),
-    ...generated,
+    ...regionGroups,
     ...remaining.slice(insertIndex),
+    ...autoGroups,
   ];
 }
 
