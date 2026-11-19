@@ -21,13 +21,17 @@ const regions = [
   { flag: "🇰🇷", name: "🇰🇷 韩国节点" },
   { flag: "🇺🇸", name: "🇺🇸 美国节点" },
   { flag: "🇹🇼", name: "🇹🇼 台湾节点" },
-].map(region => ({ ...region, autoName: region.name.replace("节点", "自动选择") }));
+].map(region => ({
+  ...region,
+  autoName: `${region.flag} 自动选择`,
+  legacyAutoName: region.name.replace("节点", "自动选择"),
+}));
 
 function addRegionGroups(config) {
   const groups = config["proxy-groups"] || [];
   const nodes = config.proxies || [];
   const regionNames = new Set(regions.map(region => region.name));
-  const managedNames = new Set(regions.flatMap(region => [region.name, region.autoName]));
+  const managedNames = new Set(regions.flatMap(region => [region.name, region.autoName, region.legacyAutoName]));
   const remaining = groups.filter(group => !managedNames.has(group.name));
   const generated = regions.flatMap(region => {
     const names = [...new Set(nodes
@@ -35,7 +39,8 @@ function addRegionGroups(config) {
       .map(node => node.name))];
     if (!names.length) return [];
     const existing = groups.find(group => group.name === region.name);
-    const existingAuto = groups.find(group => group.name === region.autoName);
+    const existingAuto = groups.find(group => group.name === region.autoName)
+      || groups.find(group => group.name === region.legacyAutoName);
     // Keep manual node choices alongside a region-only automatic selector.
     return [
       { ...existing, type: "select", name: region.name, proxies: [region.autoName, ...names] },
