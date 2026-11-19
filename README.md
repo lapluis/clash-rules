@@ -15,7 +15,7 @@
 脚本根据节点名称开头的旗帜，自动创建香港、日本、韩国、美国、台湾五个手动选择组，并将地区选项加入以下代理组：
 
 - 🔰 节点选择
-- 🤖 ChatGPT & Copilot
+- 🤖 AI Services
 - 🎮 Steam Store & Community
 - 🎥 NETFLIX
 - 🎵 Spotify
@@ -32,7 +32,7 @@
 
 地区分组按香港、日本、韩国、美国、台湾的顺序排列，放在「广告拦截」分组之前；没有该分组时放在末尾。各组保留原有选项；其他组中由旧版脚本加入的地区选项会被清理。没有对应节点的地区不会创建手动组或自动子组。
 
-缺少规则所需的代理组时，脚本会明确报错。
+原订阅的「🤖 ChatGPT & Copilot」组会自动重命名为「🤖 AI Services」，相应的代理组选项、默认选项和规则引用也会同步更新；若新旧组同时存在，保留新组设置并合并选项。缺少规则所需的代理组时，脚本会明确报错。
 
 ## 策略及顺序
 
@@ -40,13 +40,13 @@
 | --- | --- |
 | reject.yml | REJECT |
 | direct.yml | DIRECT |
-| ai.yml | 🤖 ChatGPT & Copilot |
-| 远程 google-gemini.list（`MetaCubeX-google-gemini`） | 🤖 ChatGPT & Copilot |
-| 远程 openai.list（`MetaCubeX-openai`） | 🤖 ChatGPT & Copilot |
+| ai.yml | 🤖 AI Services |
+| 远程 google-gemini.list（`MetaCubeX-google-gemini`） | 🤖 AI Services |
+| 远程 openai.list（`MetaCubeX-openai`） | 🤖 AI Services |
 | japan.yml | 🇯🇵 日本节点 |
 | proxy.yml | 🔰 节点选择 |
 
-Google Gemini / Antigravity 等 Google AI 域名引用 [MetaCubeX 的 google-gemini.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.list)，ChatGPT / OpenAI 域名引用 [openai.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.list)，对应规则集名为 `MetaCubeX-google-gemini`、`MetaCubeX-openai`。两个规则集均使用 `behavior: domain`、`format: text`，每小时自动更新，统一指向「🤖 ChatGPT & Copilot」，按 Gemini、OpenAI 的顺序紧接本地 `ai.yml`。原订阅规则继续保留在自定义规则之后。`ai.yml` 继续保留原有的 `gstatic.com` 和 Google 正则两条规则。更换为本版脚本需要粘贴并重新应用一次，后续远程列表内容更新无需重新粘贴。
+Google Gemini / Antigravity 等 Google AI 域名引用 [MetaCubeX 的 google-gemini.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.list)，ChatGPT / OpenAI 域名引用 [openai.list](https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.list)，对应规则集名为 `MetaCubeX-google-gemini`、`MetaCubeX-openai`。两个规则集均使用 `behavior: domain`、`format: text`，每小时自动更新，统一指向「🤖 AI Services」，按 Gemini、OpenAI 的顺序紧接本地 `ai.yml`。原订阅规则继续保留在自定义规则之后。`ai.yml` 继续保留原有的 `gstatic.com` 和 Google 正则两条规则。更换为本版脚本需要粘贴并重新应用一次，后续远程列表内容更新无需重新粘贴。
 
 ## 文档
 

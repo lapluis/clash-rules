@@ -1,6 +1,6 @@
 const baseURL = "https://raw.githubusercontent.com/lapluis/clash-rules/main/rules";
 const policies = {
-  ai: "🤖 ChatGPT & Copilot",
+  ai: "🤖 AI Services",
   steam: "🎮 Steam Store & Community",
   netflix: "🎥 NETFLIX",
   spotify: "🎵 Spotify",
@@ -26,6 +26,32 @@ const regions = [
   autoName: `${region.flag} 自动选择`,
   legacyAutoName: region.name.replace("节点", "自动选择"),
 }));
+
+function renameAiGroup(config) {
+  const legacyName = "🤖 ChatGPT & Copilot";
+  if (policies.ai === legacyName) return;
+  const groups = config["proxy-groups"] || [];
+  const legacy = groups.find(group => group.name === legacyName);
+  const target = groups.find(group => group.name === policies.ai);
+  if (legacy && target) {
+    target.proxies = [...new Set([...(target.proxies || []), ...(legacy.proxies || [])])];
+    config["proxy-groups"] = groups.filter(group => group !== legacy);
+  } else if (legacy) {
+    legacy.name = policies.ai;
+  }
+  (config["proxy-groups"] || []).forEach(group => {
+    if (Array.isArray(group.proxies)) {
+      group.proxies = [...new Set(group.proxies.map(name => name === legacyName ? policies.ai : name))]
+        .filter(name => group.name !== policies.ai || name !== policies.ai);
+    }
+    if (group["default-selected"] === legacyName) group["default-selected"] = policies.ai;
+  });
+  const renameRule = rule => rule.split(",").map(part => part === legacyName ? policies.ai : part).join(",");
+  config.rules = (config.rules || []).map(renameRule);
+  Object.keys(config["sub-rules"] || {}).forEach(name => {
+    config["sub-rules"][name] = config["sub-rules"][name].map(renameRule);
+  });
+}
 
 function addRegionGroups(config) {
   const groups = config["proxy-groups"] || [];
@@ -98,6 +124,7 @@ function addRegionGroups(config) {
 }
 
 function main(config) {
+  renameAiGroup(config);
   addRegionGroups(config);
   const available = new Set([
     "DIRECT", "REJECT",
