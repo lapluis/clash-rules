@@ -51,15 +51,21 @@ function addRegionGroups(config) {
   remaining.forEach(group => {
     if (serviceGroups.has(group.name)) {
       group.proxies = [...new Set([
-        ...(group.proxies || []).filter(name => !regionNames.has(name)),
         ...generatedNames,
+        ...(group.proxies || []).filter(name => !regionNames.has(name)),
       ])];
     } else if (Array.isArray(group.proxies)) {
       // Clean up legacy region choices.
       group.proxies = group.proxies.filter(name => !regionNames.has(name));
     }
   });
-  config["proxy-groups"] = [...remaining, ...generated];
+  const adBlockIndex = remaining.findIndex(group => group.name.includes("广告拦截"));
+  const insertIndex = adBlockIndex === -1 ? remaining.length : adBlockIndex;
+  config["proxy-groups"] = [
+    ...remaining.slice(0, insertIndex),
+    ...generated,
+    ...remaining.slice(insertIndex),
+  ];
 }
 
 function main(config) {
