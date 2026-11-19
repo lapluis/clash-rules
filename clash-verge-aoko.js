@@ -21,23 +21,37 @@ const regions = [
   { flag: "🇰🇷", name: "🇰🇷 韩国节点" },
   { flag: "🇺🇸", name: "🇺🇸 美国节点" },
   { flag: "🇹🇼", name: "🇹🇼 台湾节点" },
-];
+].map(region => ({ ...region, autoName: region.name.replace("节点", "自动选择") }));
 
 function addRegionGroups(config) {
   const groups = config["proxy-groups"] || [];
   const nodes = config.proxies || [];
   const regionNames = new Set(regions.map(region => region.name));
-  const remaining = groups.filter(group => !regionNames.has(group.name));
+  const managedNames = new Set(regions.flatMap(region => [region.name, region.autoName]));
+  const remaining = groups.filter(group => !managedNames.has(group.name));
   const generated = regions.flatMap(region => {
     const names = [...new Set(nodes
       .filter(node => typeof node.name === "string" && node.name.trimStart().startsWith(region.flag))
       .map(node => node.name))];
     if (!names.length) return [];
     const existing = groups.find(group => group.name === region.name);
-    // Preserve group settings.
-    return [{ type: "select", ...existing, name: region.name, proxies: names }];
+    const existingAuto = groups.find(group => group.name === region.autoName);
+    // Keep manual node choices alongside a region-only automatic selector.
+    return [
+      { ...existing, type: "select", name: region.name, proxies: [region.autoName, ...names] },
+      {
+        ...existingAuto,
+        name: region.autoName,
+        type: "url-test",
+        proxies: names,
+        url: "https://cp.cloudflare.com/generate_204",
+        interval: 1800,
+        tolerance: 150,
+        lazy: false,
+      },
+    ];
   });
-  const generatedNames = generated.map(group => group.name);
+  const generatedNames = generated.filter(group => regionNames.has(group.name)).map(group => group.name);
   const serviceGroups = new Set([
     policies.proxy,
     policies.ai,
@@ -51,7 +65,7 @@ function addRegionGroups(config) {
   ]);
   remaining.forEach(group => {
     if (serviceGroups.has(group.name)) {
-      const choices = (group.proxies || []).filter(name => !regionNames.has(name));
+      const choices = (group.proxies || []).filter(name => !managedNames.has(name));
       const primary = group.name !== policies.proxy && choices.includes(policies.proxy)
         ? [policies.proxy]
         : [];
@@ -62,7 +76,7 @@ function addRegionGroups(config) {
       ])];
     } else if (Array.isArray(group.proxies)) {
       // Clean up legacy region choices.
-      group.proxies = group.proxies.filter(name => !regionNames.has(name));
+      group.proxies = group.proxies.filter(name => !managedNames.has(name));
     }
   });
   const adBlockIndex = remaining.findIndex(group => group.name.includes("广告拦截"));
