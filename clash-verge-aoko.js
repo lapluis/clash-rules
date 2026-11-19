@@ -149,7 +149,7 @@ function main(config) {
     };
     return `RULE-SET,${name},${policies[key]}`;
   });
-  const remoteAiNames = ["google-gemini", "openai"].map(list => {
+  const remoteAiNames = ["google", "openai"].map(list => {
     const name = `MetaCubeX-${list}`;
     config["rule-providers"][name] = {
       type: "http",
